@@ -4,196 +4,1104 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="dark" />
-<title>Wishlist Keeper</title>
+<title>Wishlist Keeper — Desktop &amp; Mobile Shopping Wishlist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #141C17;
-    --panel: #202B23;
-    --panel-line: #33433A;
-    --paper: #EDE6D3;
-    --paper-ink: #2C2415;
-    --paper-line: #D8CDA9;
-    --paper-field: #FBF8F0;
-    --marigold: #E3A23E;
-    --marigold-ink: #4A2F08;
-    --coral: #D9604C;
-    --sage: #7FA37A;
-    --text: #ECEEE8;
-    --text-muted: #9FB0A5;
-    --font-serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif;
-    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    --radius: 10px;
+    --ink: #0E1511;
+    --ink-surface: #131E18;
+    --panel: #18241D;
+    --panel-hover: #1E2D24;
+    --panel-line: #293B30;
+    --panel-line-light: #3D5546;
+    --paper: #F3ECE0;
+    --paper-ink: #241D14;
+    --paper-line: #DDD2BC;
+    --paper-field: #FAF7F0;
+    --paper-muted: #7A6F5C;
+    --marigold: #F5B041;
+    --marigold-ink: #3D2605;
+    --marigold-glow: rgba(245, 176, 65, 0.2);
+    --coral: #E75C46;
+    --coral-ink: #35100B;
+    --sage: #6EAE76;
+    --sage-ink: #112614;
+    --text: #F1F4EE;
+    --text-muted: #9EAF9F;
+    --text-dim: #6E8273;
+    --font-serif: 'Playfair Display', Georgia, 'Palatino Linotype', serif;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 16px 40px -8px rgba(0, 0, 0, 0.45);
+    --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   [hidden] { display: none !important; }
+
   body {
     background: var(--ink);
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(110, 174, 118, 0.08), transparent 70%),
+      radial-gradient(circle at 100% 100%, rgba(245, 176, 65, 0.04), transparent 40%);
+    background-attachment: fixed;
     color: var(--text);
     font-family: var(--font-sans);
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
   }
-  .wrap { max-width: 640px; margin: 0 auto; padding: 28px 18px 80px; }
 
-  /* Header */
-  .site-header { margin-bottom: 22px; }
-  .site-header h1 {
+  /* App Outer Shell */
+  .app-shell {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* Top Global Header */
+  .global-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--panel-line);
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brand-logo {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--marigold) 0%, #D88927 100%);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--marigold-ink);
+    box-shadow: 0 4px 14px var(--marigold-glow);
+    flex-shrink: 0;
+  }
+
+  .brand-titles h1 {
     font-family: var(--font-serif);
-    font-size: 32px;
-    font-weight: 600;
-    margin: 0 0 6px;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
     letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: #FFFDF8;
   }
-  .site-header .subtitle { margin: 0; color: var(--text-muted); font-size: 15px; max-width: 42ch; }
 
-  /* Add panel */
+  .brand-titles .subtitle {
+    margin: 3px 0 0;
+    color: var(--text-muted);
+    font-size: 13.5px;
+  }
+
+  /* Layout Columns */
+  .app-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* Left Sidebar (Sticky) */
+  .sidebar-col {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Add/Edit Panel */
   .add-panel {
     background: var(--paper);
     color: var(--paper-ink);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 24px;
-    box-shadow: 0 10px 26px rgba(0,0,0,0.3);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--paper-line);
+    position: relative;
+    transition: var(--transition);
   }
-  .add-panel h2 { font-family: var(--font-serif); font-size: 19px; margin: 0 0 14px; font-weight: 600; }
-  .field { margin-bottom: 12px; }
+
+  .add-panel.editing-active {
+    box-shadow: 0 0 0 3px var(--marigold), var(--shadow-lg);
+    border-color: var(--marigold);
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .add-panel h2 {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .panel-badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(36, 29, 20, 0.08);
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: var(--paper-muted);
+  }
+
+  .field { margin-bottom: 14px; }
   .field label, .field-label {
     display: block;
-    font-size: 13px;
-    color: #5C513A;
-    margin-bottom: 4px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--paper-muted);
+    margin-bottom: 5px;
   }
+
   .field input, .field textarea {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--paper-line);
-    border-radius: 8px;
+    padding: 10px 13px;
+    border: 1.5px solid var(--paper-line);
+    border-radius: var(--radius-sm);
     background: var(--paper-field);
     color: var(--paper-ink);
     font-family: var(--font-sans);
-    font-size: 15px;
+    font-size: 14.5px;
+    transition: var(--transition);
   }
-  .field textarea { resize: vertical; min-height: 44px; }
-  .field input:focus, .field textarea:focus {
-    outline: 2px solid var(--marigold);
-    outline-offset: 1px;
-    border-color: var(--marigold);
-  }
-  .img-preview { margin-top: 8px; width: 72px; height: 72px; border-radius: 8px; overflow: hidden; border: 1px solid var(--paper-line); background: var(--paper-field); }
-  .img-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .field-row { display: flex; gap: 12px; }
-  .field-row .field { flex: 1; margin-bottom: 12px; }
 
-  .priority-picker { display: flex; border: 1px solid var(--paper-line); border-radius: 8px; overflow: hidden; }
-  .prio-btn {
-    flex: 1; padding: 9px 0; border: none; border-right: 1px solid var(--paper-line);
-    background: var(--paper-field); color: var(--paper-ink);
-    font-family: var(--font-sans); font-size: 14px; cursor: pointer;
+  .field textarea {
+    resize: vertical;
+    min-height: 54px;
+    line-height: 1.4;
   }
+
+  .field input:focus, .field textarea:focus {
+    outline: none;
+    border-color: #A36B15;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(245, 176, 65, 0.25);
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .priority-picker {
+    display: flex;
+    border: 1.5px solid var(--paper-line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--paper-field);
+  }
+
+  .prio-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: none;
+    border-right: 1.5px solid var(--paper-line);
+    background: transparent;
+    color: var(--paper-muted);
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
   .prio-btn:last-child { border-right: none; }
-  .prio-btn.active[data-value="low"] { background: var(--sage); color: #10230F; }
+  .prio-btn:hover { background: rgba(0, 0, 0, 0.04); color: var(--paper-ink); }
+  .prio-btn.active[data-value="low"] { background: var(--sage); color: var(--sage-ink); }
   .prio-btn.active[data-value="medium"] { background: var(--marigold); color: var(--marigold-ink); }
-  .prio-btn.active[data-value="high"] { background: var(--coral); color: #370E07; }
+  .prio-btn.active[data-value="high"] { background: var(--coral); color: #FFFFFF; }
+
+  .img-preview-box {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0,0,0,0.03);
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    border: 1px dashed var(--paper-line);
+  }
+
+  .img-preview-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #FFF;
+    border: 1px solid var(--paper-line);
+    flex-shrink: 0;
+  }
+
+  .img-preview-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .img-preview-info {
+    font-size: 12px;
+    color: var(--paper-muted);
+    line-height: 1.3;
+  }
 
   .link-btn {
-    background: none; border: none; color: #6B5A2E; font-size: 13px;
-    padding: 0; margin: -4px 0 12px; cursor: pointer; text-decoration: underline;
+    background: none;
+    border: none;
+    color: #6C5521;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0;
+    margin: 2px 0 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .link-btn:hover { color: var(--paper-ink); }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--paper-line);
   }
 
   .primary-btn {
-    background: var(--ink); color: var(--paper); border: none;
-    padding: 11px 20px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
   }
-  .primary-btn:hover { background: #24312A; }
+  .primary-btn:hover { background: #1C2720; transform: translateY(-1px); }
+  .primary-btn:active { transform: translateY(0); }
+
   .ghost-btn {
-    background: transparent; border: 1px solid var(--paper-line); color: var(--paper-ink);
-    padding: 11px 16px; border-radius: 8px; font-size: 15px; cursor: pointer;
+    background: transparent;
+    border: 1.5px solid var(--paper-line);
+    color: var(--paper-ink);
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
   }
-  .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+  .ghost-btn:hover { background: rgba(0, 0, 0, 0.05); }
 
-  /* Stats */
-  .stats { display: flex; gap: 10px; margin-bottom: 18px; }
-  .stat { flex: 1; background: var(--panel); border: 1px solid var(--panel-line); border-radius: 8px; padding: 12px 14px; }
-  .stat-num { display: block; font-family: var(--font-serif); font-size: 20px; font-weight: 600; color: var(--marigold); }
-  .stat-label { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-  .stat.over .stat-num { color: var(--coral); }
-  .budget-display { cursor: pointer; }
-  .budget-edit { display: flex; gap: 6px; align-items: center; }
-  .budget-edit input {
-    width: 100%; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--panel-line);
-    background: var(--ink); color: var(--text); font-size: 14px;
+  /* Right Main Content */
+  .main-col {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    min-width: 0;
   }
 
-  /* Controls */
-  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-  .controls input, .controls select {
-    background: var(--panel); border: 1px solid var(--panel-line); color: var(--text);
-    padding: 9px 10px; border-radius: 8px; font-size: 14px; font-family: var(--font-sans);
+  /* Stats Section (Desktop Grid) */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
   }
-  #searchInput { flex: 2; min-width: 140px; }
-  #filterCategory, #sortSelect { flex: 1; min-width: 120px; }
 
-  /* List */
-  .list-wrap { margin-bottom: 20px; }
-  .item-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--panel-line); }
-  .item-row { display: flex; align-items: flex-start; gap: 12px; padding: 14px 4px 14px 12px; border-bottom: 1px solid var(--panel-line); border-left: 3px solid transparent; }
+  .stat-card {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+  }
+  .stat-card:hover { border-color: var(--panel-line-light); }
+
+  .stat-header-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .stat-num {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--marigold);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .stat-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+  }
+
+  /* Budget Card & Meter */
+  .stat-card.budget-card {
+    cursor: pointer;
+  }
+  .stat-card.over .stat-num { color: var(--coral); }
+  .stat-card.over .stat-badge { background: rgba(231, 92, 70, 0.2); color: var(--coral); }
+  .stat-card.good .stat-badge { background: rgba(110, 174, 118, 0.2); color: var(--sage); }
+
+  .budget-meter-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 99px;
+    margin-top: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .budget-meter-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--sage);
+    border-radius: 99px;
+    transition: width 0.4s ease, background-color 0.4s ease;
+  }
+
+  .budget-edit-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 6px;
+  }
+
+  .budget-edit-form input {
+    flex: 1;
+    background: var(--ink);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 7px 10px;
+    font-size: 14px;
+    font-family: var(--font-sans);
+  }
+  .budget-edit-form input:focus { outline: 1px solid var(--marigold); }
+
+  .primary-btn-sm, .ghost-btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .primary-btn-sm {
+    background: var(--marigold);
+    color: var(--marigold-ink);
+    border: none;
+  }
+  .ghost-btn-sm {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--panel-line);
+  }
+
+  /* Controls & Search Toolbar */
+  .toolbar {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .search-box {
+    flex: 2;
+    min-width: 220px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-dim);
+    pointer-events: none;
+  }
+
+  .search-box input {
+    width: 100%;
+    background: var(--ink);
+    border: 1px solid var(--panel-line);
+    color: var(--text);
+    padding: 9px 34px 9px 36px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: var(--font-sans);
+    transition: var(--transition);
+  }
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--marigold);
+    box-shadow: 0 0 0 3px var(--marigold-glow);
+  }
+
+  .search-clear-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .search-clear-btn:hover { color: var(--text); }
+
+  .filter-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex: 1;
+    min-width: 240px;
+  }
+
+  .select-styled {
+    flex: 1;
+    background: var(--ink);
+    border: 1px solid var(--panel-line);
+    color: var(--text);
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 13.5px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .select-styled:focus { outline: 1px solid var(--marigold); }
+
+  /* View Mode Switcher */
+  .view-switcher {
+    display: flex;
+    background: var(--ink);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .view-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .view-btn:hover { color: var(--text); }
+  .view-btn.active {
+    background: var(--panel-line);
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+
+  /* Quick Category Filter Pills */
+  .category-pills-bar {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .category-pills-bar::-webkit-scrollbar { display: none; }
+
+  .cat-pill {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    color: var(--text-muted);
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+  }
+  .cat-pill:hover {
+    border-color: var(--panel-line-light);
+    color: var(--text);
+  }
+  .cat-pill.active {
+    background: var(--paper);
+    color: var(--paper-ink);
+    border-color: var(--paper);
+    font-weight: 600;
+  }
+
+  /* Wishlist Items Layout Container */
+  .items-container {
+    min-height: 200px;
+  }
+
+  /* ========================================================
+     GRID VIEW (Product Cards)
+     ======================================================== */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .item-card {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    position: relative;
+  }
+
+  .item-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--panel-line-light);
+  }
+
+  .item-card.prio-high { border-top: 3px solid var(--coral); }
+  .item-card.prio-medium { border-top: 3px solid var(--marigold); }
+  .item-card.prio-low { border-top: 3px solid var(--sage); }
+
+  .card-media {
+    height: 165px;
+    position: relative;
+    background: var(--ink-surface);
+    overflow: hidden;
+  }
+
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  .item-card:hover .card-img { transform: scale(1.04); }
+
+  .card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text-dim);
+    background: linear-gradient(135deg, rgba(24, 36, 29, 0.8) 0%, rgba(14, 21, 17, 0.95) 100%);
+  }
+  .card-placeholder svg { opacity: 0.5; }
+  .card-placeholder span { font-size: 12px; font-weight: 500; opacity: 0.7; }
+
+  .card-badge-layer {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .badge-prio {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  .badge-prio.high { background: rgba(231, 92, 70, 0.9); color: #FFF; }
+  .badge-prio.medium { background: rgba(245, 176, 65, 0.9); color: var(--marigold-ink); }
+  .badge-prio.low { background: rgba(110, 174, 118, 0.9); color: var(--sage-ink); }
+
+  .badge-cat {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(14, 21, 17, 0.75);
+    color: var(--text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+  }
+
+  .card-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-family: var(--font-serif);
+    font-size: 17.5px;
+    font-weight: 600;
+    margin: 0;
+    color: #FFFDF8;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-price {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--marigold);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .card-notes {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 4px 0 14px;
+    line-height: 1.45;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--panel-line);
+    margin-top: auto;
+  }
+
+  .got-btn {
+    background: transparent;
+    border: 1px solid var(--panel-line-light);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+  }
+  .got-btn:hover {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: var(--sage-ink);
+  }
+
+  .card-icon-btns {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .icon-action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition);
+    padding: 0;
+  }
+  .icon-action-btn:hover {
+    background: var(--ink-surface);
+    border-color: var(--panel-line);
+    color: var(--text);
+  }
+  .icon-action-btn.delete-btn:hover {
+    color: var(--coral);
+    background: rgba(231, 92, 70, 0.1);
+  }
+  .icon-action-btn.delete-armed {
+    background: var(--coral) !important;
+    color: #FFF !important;
+    width: auto !important;
+    padding: 0 10px !important;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* ========================================================
+     LIST VIEW (Rows)
+     ======================================================== */
+  .item-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .item-row {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 18px;
+    border-left: 4px solid transparent;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+  }
+  .item-row:hover {
+    border-color: var(--panel-line-light);
+    background: var(--panel-hover);
+  }
+
   .item-row.prio-high { border-left-color: var(--coral); }
   .item-row.prio-medium { border-left-color: var(--marigold); }
   .item-row.prio-low { border-left-color: var(--sage); }
 
-  .item-thumb { width: 52px; height: 52px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--panel-line); background: var(--panel); }
-  .item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-  .check {
-    width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--panel-line);
-    background: transparent; flex-shrink: 0; margin-top: 3px; cursor: pointer;
-    color: #10230F; font-size: 12px; line-height: 1; padding: 0;
+  .check-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--panel-line-light);
+    background: transparent;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    transition: var(--transition);
+    padding: 0;
   }
-  .check.checked { background: var(--sage); border-color: var(--sage); }
-  .check.checked::after { content: '\2713'; }
+  .check-circle:hover { border-color: var(--sage); color: var(--sage); }
+  .check-circle.checked { background: var(--sage); border-color: var(--sage); color: var(--sage-ink); }
 
-  .item-main { flex: 1; min-width: 0; }
-  .item-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
-  .item-name { font-family: var(--font-serif); font-size: 16.5px; font-weight: 600; }
-  .item-price { font-size: 15px; font-weight: 600; color: var(--marigold); white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .item-meta { display: flex; gap: 10px; font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
-  .item-notes { font-size: 13.5px; color: var(--text-muted); margin: 6px 0 0; }
-  .item-actions { display: flex; gap: 14px; margin-top: 8px; flex-wrap: wrap; }
-  .text-btn { background: none; border: none; padding: 0; color: var(--text-muted); font-size: 13px; cursor: pointer; text-decoration: none; font-family: var(--font-sans); }
-  .text-btn:hover, .text-btn:focus-visible { color: var(--text); }
-  .text-btn.danger { color: var(--coral); }
-  a.text-btn { color: var(--marigold); }
-
-  /* Purchased */
-  .purchased-wrap { margin-bottom: 20px; }
-  .section-toggle {
-    background: none; border: none; color: var(--text-muted); font-size: 14px; padding: 10px 0;
-    cursor: pointer; border-top: 1px solid var(--panel-line); width: 100%; text-align: left; font-family: var(--font-sans);
+  .row-thumb {
+    width: 54px;
+    height: 54px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid var(--panel-line);
+    background: var(--ink-surface);
   }
-  .item-row.purchased-row .item-name { text-decoration: line-through; color: var(--text-muted); }
-  .item-row.purchased-row .item-thumb { opacity: 0.55; }
+  .row-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  /* Empty / loading */
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
-  .empty-state p { margin: 4px 0; }
-  .empty-state p:first-child { font-family: var(--font-serif); font-size: 18px; color: var(--text); }
-  .loading { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 14px; }
+  .row-main {
+    flex: 1;
+    min-width: 0;
+  }
 
-  /* Toast */
+  .row-top {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .row-name {
+    font-family: var(--font-serif);
+    font-size: 16.5px;
+    font-weight: 600;
+    color: #FFFDF8;
+  }
+
+  .row-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  .row-notes {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 4px 0 0;
+  }
+
+  .row-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  .row-price {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: var(--marigold);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .row-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Purchased Section */
+  .purchased-section {
+    margin-top: 16px;
+    border-top: 1px solid var(--panel-line);
+    padding-top: 16px;
+  }
+
+  .purchased-toggle-btn {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 16px;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .purchased-toggle-btn:hover { color: var(--text); border-color: var(--panel-line-light); }
+
+  .item-row.purchased-row {
+    opacity: 0.7;
+  }
+  .item-row.purchased-row .row-name {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  /* Empty & Loading States */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--panel);
+    border: 1px dashed var(--panel-line);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+  }
+  .empty-state-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: var(--ink-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--marigold);
+  }
+  .empty-state h3 {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: #FFFDF8;
+    margin: 0 0 6px;
+  }
+  .empty-state p { margin: 0; font-size: 14px; }
+
+  .loading-state {
+    text-align: center;
+    padding: 50px 0;
+    color: var(--text-muted);
+    font-size: 14.5px;
+  }
+
+  /* Toast Notification */
   .toast {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-    background: var(--coral); color: #fff; padding: 10px 18px; border-radius: 8px;
-    font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--coral);
+    color: #FFFFFF;
+    padding: 12px 22px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: toastPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  :focus-visible { outline: 2px solid var(--marigold); outline-offset: 2px; }
+  @keyframes toastPop {
+    from { opacity: 0; transform: translate(-50%, 15px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
 
-  @media (max-width: 380px) {
-    .stats { flex-direction: column; }
-    .field-row { flex-direction: column; gap: 0; }
+  :focus-visible {
+    outline: 2px solid var(--marigold);
+    outline-offset: 2px;
+  }
+
+  /* Mobile Toggle for Sidebar Form */
+  .mobile-add-toggle {
+    display: none;
+    width: 100%;
+    background: var(--marigold);
+    color: var(--marigold-ink);
+    border: none;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 16px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 1023px) {
+    .app-layout {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .sidebar-col {
+      position: static;
+    }
+    .mobile-add-toggle {
+      display: flex;
+    }
+    .stats-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .app-shell {
+      padding: 20px 14px 60px;
+    }
+    .global-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stats-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .toolbar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .search-box {
+      width: 100%;
+    }
+    .filter-controls {
+      width: 100%;
+    }
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+    .field-row {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -202,113 +1110,220 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="app-shell">
 
-  <header class="site-header">
-    <h1>Wishlist Keeper</h1>
-    <p class="subtitle">Track what you want, what it costs, and what matters most.</p>
+  <!-- Header -->
+  <header class="global-header">
+    <div class="brand-group">
+      <div class="brand-logo" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+      </div>
+      <div class="brand-titles">
+        <h1>Wishlist Keeper</h1>
+        <p class="subtitle">Track what you want, calculate your budget, and prioritize essentials.</p>
+      </div>
+    </div>
   </header>
 
-  <section class="add-panel" id="addPanel">
-    <h2 id="formTitle">Add something you want</h2>
-    <form id="itemForm">
-      <div class="field">
-        <label for="fName">Name</label>
-        <input type="text" id="fName" required placeholder="e.g. Mechanical keyboard" />
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label for="fPrice">Price</label>
-          <input type="number" id="fPrice" min="0" step="1" inputmode="decimal" placeholder="0" />
+  <!-- Mobile Collapsible Form Trigger -->
+  <button type="button" id="mobileAddToggle" class="mobile-add-toggle">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    <span>Add New Wishlist Item</span>
+  </button>
+
+  <!-- Dual-Column Desktop Layout -->
+  <main class="app-layout">
+
+    <!-- Left Sticky Column: Add / Edit Form -->
+    <aside class="sidebar-col" id="sidebarCol">
+      <section class="add-panel" id="addPanel">
+        <div class="panel-header">
+          <h2 id="formTitle">Add something you want</h2>
+          <span class="panel-badge" id="panelBadge">New Item</span>
         </div>
-        <div class="field">
-          <label for="fCategory">Category</label>
-          <input type="text" id="fCategory" list="categoryList" placeholder="Electronics" />
-          <datalist id="categoryList">
-            <option value="Electronics"></option>
-            <option value="Books"></option>
-            <option value="Clothing"></option>
-            <option value="Home"></option>
-            <option value="Hobbies"></option>
-            <option value="Other"></option>
-          </datalist>
+        <form id="itemForm">
+          <div class="field">
+            <label for="fName">Item Name</label>
+            <input type="text" id="fName" required placeholder="e.g. Mechanical keyboard, Wool coat" autocomplete="off" />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="fPrice">Price (₹)</label>
+              <input type="number" id="fPrice" min="0" step="1" inputmode="decimal" placeholder="0" />
+            </div>
+            <div class="field">
+              <label for="fCategory">Category</label>
+              <input type="text" id="fCategory" list="categoryList" placeholder="Electronics" />
+              <datalist id="categoryList">
+                <option value="Electronics"></option>
+                <option value="Books"></option>
+                <option value="Clothing"></option>
+                <option value="Home"></option>
+                <option value="Hobbies"></option>
+                <option value="Audio"></option>
+                <option value="Other"></option>
+              </datalist>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Priority Level</span>
+            <div class="priority-picker" id="priorityPicker" role="group" aria-label="Priority level">
+              <button type="button" class="prio-btn" data-value="low" aria-pressed="false">Low</button>
+              <button type="button" class="prio-btn active" data-value="medium" aria-pressed="true">Medium</button>
+              <button type="button" class="prio-btn" data-value="high" aria-pressed="false">High</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="fLink">Product URL</label>
+            <input type="url" id="fLink" placeholder="https://store.com/item (optional)" />
+          </div>
+
+          <div class="field">
+            <label for="fImage">Photo URL</label>
+            <input type="url" id="fImage" placeholder="Image link for preview (optional)" />
+            <div class="img-preview-box" id="imgPreview" hidden>
+              <div class="img-preview-thumb">
+                <img id="imgPreviewTag" src="" alt="Preview" />
+              </div>
+              <div class="img-preview-info">
+                <span>Image loaded successfully</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" id="toggleNotes" class="link-btn">+ Add a note or specifications</button>
+          <div class="field" id="notesField" hidden>
+            <label for="fNotes">Notes &amp; Details</label>
+            <textarea id="fNotes" rows="2" placeholder="Size, color, store discount, why you want it..."></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="cancelEdit" class="ghost-btn" hidden>Cancel</button>
+            <button type="submit" id="submitBtn" class="primary-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Add to list</span>
+            </button>
+          </div>
+        </form>
+      </section>
+    </aside>
+
+    <!-- Right Main Column: Stats, Filter Toolbar, Grid / List Gallery -->
+    <section class="main-col">
+
+      <!-- Stats Overview Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header-row">
+            <span class="stat-num" id="statCount">0</span>
+            <span class="stat-badge">Active</span>
+          </div>
+          <span class="stat-label">Items on your wishlist</span>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header-row">
+            <span class="stat-num" id="statTotal">₹0</span>
+            <span class="stat-badge">Total</span>
+          </div>
+          <span class="stat-label">Combined wishlist value</span>
+        </div>
+
+        <div class="stat-card budget-card" id="budgetStat">
+          <div class="budget-display" id="budgetDisplay" title="Click to edit budget">
+            <div class="stat-header-row">
+              <span class="stat-num" id="statBudget">—</span>
+              <span class="stat-badge" id="budgetPercentBadge">Budget</span>
+            </div>
+            <span class="stat-label" id="budgetLabel">Set a spending limit</span>
+            <div class="budget-meter-track" id="budgetMeterTrack" hidden>
+              <div class="budget-meter-fill" id="budgetMeterFill"></div>
+            </div>
+          </div>
+          <div class="budget-edit-form" id="budgetEdit" hidden>
+            <input type="number" id="budgetInput" min="0" step="1" inputmode="decimal" placeholder="₹ amount" />
+            <button type="button" id="budgetSave" class="primary-btn-sm">Save</button>
+            <button type="button" id="budgetCancel" class="ghost-btn-sm">Cancel</button>
+          </div>
         </div>
       </div>
-      <div class="field">
-        <span class="field-label">Priority</span>
-        <div class="priority-picker" id="priorityPicker" role="group" aria-label="Priority">
-          <button type="button" class="prio-btn" data-value="low" aria-pressed="false">Low</button>
-          <button type="button" class="prio-btn active" data-value="medium" aria-pressed="true">Medium</button>
-          <button type="button" class="prio-btn" data-value="high" aria-pressed="false">High</button>
+
+      <!-- Controls & Search Toolbar -->
+      <div class="toolbar">
+        <div class="search-box">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Search items or notes... ('/' to focus)" />
+          <button type="button" id="searchClearBtn" class="search-clear-btn" title="Clear search" hidden aria-label="Clear search">&times;</button>
+        </div>
+
+        <div class="filter-controls">
+          <select id="filterCategory" class="select-styled" aria-label="Filter by category">
+            <option value="">All categories</option>
+          </select>
+
+          <select id="sortSelect" class="select-styled" aria-label="Sort items">
+            <option value="newest">Newest first</option>
+            <option value="priceHigh">Price: High to Low</option>
+            <option value="priceLow">Price: Low to High</option>
+            <option value="priority">Priority: High first</option>
+            <option value="name">Name A–Z</option>
+          </select>
+
+          <div class="view-switcher" role="radiogroup" aria-label="Display View Mode">
+            <button type="button" class="view-btn active" id="viewGridBtn" data-view="grid" title="Grid View" aria-label="Grid View">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </button>
+            <button type="button" class="view-btn" id="viewListBtn" data-view="list" title="List View" aria-label="List View">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            </button>
+          </div>
         </div>
       </div>
-      <div class="field">
-        <label for="fLink">Link</label>
-        <input type="url" id="fLink" placeholder="Paste a link (optional)" />
-      </div>
-      <div class="field">
-        <label for="fImage">Image URL</label>
-        <input type="url" id="fImage" placeholder="Paste a photo link (optional)" />
-        <div class="img-preview" id="imgPreview" hidden>
-          <img id="imgPreviewTag" src="" alt="Preview" />
+
+      <!-- Quick Category Pills -->
+      <div class="category-pills-bar" id="categoryPills" role="tablist" aria-label="Quick category filters"></div>
+
+      <!-- Wishlist Items Container -->
+      <div class="items-container">
+        <div id="loadingState" class="loading-state">Loading your wishlist…</div>
+
+        <!-- Render Target (either grid or list class) -->
+        <ul id="itemList" class="card-grid" hidden></ul>
+
+        <div id="emptyState" class="empty-state" hidden>
+          <div class="empty-state-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+          </div>
+          <h3 id="emptyTitle">Your wishlist is empty</h3>
+          <p id="emptySubtitle">Add your first item using the form on the left to start curating.</p>
         </div>
       </div>
-      <button type="button" id="toggleNotes" class="link-btn">+ Add a note</button>
-      <div class="field" id="notesField" hidden>
-        <label for="fNotes">Notes</label>
-        <textarea id="fNotes" rows="2" placeholder="Size, color, why you want it..."></textarea>
+
+      <!-- Purchased Archive Section -->
+      <div class="purchased-section" id="purchasedWrap" hidden>
+        <button type="button" id="purchasedToggle" class="purchased-toggle-btn">
+          <span>Already acquired items (<span id="purchasedCount">0</span>)</span>
+          <svg id="purchasedCaret" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div id="purchasedContent" hidden style="margin-top: 12px;">
+          <ul id="purchasedList" class="item-list"></ul>
+        </div>
       </div>
-      <div class="form-actions">
-        <button type="button" id="cancelEdit" class="ghost-btn" hidden>Cancel</button>
-        <button type="submit" id="submitBtn" class="primary-btn">Add to list</button>
-      </div>
-    </form>
-  </section>
 
-  <section class="stats">
-    <div class="stat">
-      <span class="stat-num" id="statCount">0</span>
-      <span class="stat-label">items on your list</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num" id="statTotal">₹0</span>
-      <span class="stat-label">total value</span>
-    </div>
-    <div class="stat" id="budgetStat">
-      <div class="budget-display" id="budgetDisplay">
-        <span class="stat-num" id="statBudget">—</span>
-        <span class="stat-label" id="budgetLabel">Set a budget</span>
-      </div>
-      <div class="budget-edit" id="budgetEdit" hidden>
-        <input type="number" id="budgetInput" min="0" step="1" inputmode="decimal" placeholder="₹ amount" />
-        <button type="button" id="budgetSave" class="text-btn">Save</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="controls">
-    <input type="text" id="searchInput" placeholder="Search your list" />
-    <select id="filterCategory"><option value="">All categories</option></select>
-    <select id="sortSelect">
-      <option value="newest">Newest first</option>
-      <option value="priceHigh">Price: high to low</option>
-      <option value="priceLow">Price: low to high</option>
-      <option value="priority">Priority</option>
-      <option value="name">Name A–Z</option>
-    </select>
-  </section>
-
-  <section class="list-wrap">
-    <div id="loadingState" class="loading">Loading your list…</div>
-    <ul id="itemList" class="item-list" hidden></ul>
-    <div id="emptyState" class="empty-state" hidden></div>
-  </section>
-
-  <section class="purchased-wrap" id="purchasedWrap" hidden>
-    <button type="button" id="purchasedToggle" class="section-toggle">Already got these (<span id="purchasedCount">0</span>)</button>
-    <ul id="purchasedList" class="item-list purchased" hidden></ul>
-  </section>
-
+    </section>
+  </main>
 </div>
 
 <div id="toast" class="toast" hidden></div>
@@ -317,8 +1332,15 @@
 (function () {
   'use strict';
   var STORAGE_KEY = 'wishlist:data';
+  var VIEW_KEY = 'wishlist:viewMode';
   var hasCloudStorage = typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function';
-  var state = { items: [], budget: null };
+
+  var state = {
+    items: [],
+    budget: null,
+    viewMode: localStorage.getItem(VIEW_KEY) || (window.innerWidth >= 768 ? 'grid' : 'list')
+  };
+
   var editingId = null;
   var deleteArmedId = null;
   var currentPriority = 'medium';
@@ -343,17 +1365,22 @@
   var toastTimer = null;
   function showToast(msg) {
     var t = el('toast');
-    t.textContent = msg;
+    t.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg><span>' + escapeHtml(msg) + '</span>';
     t.hidden = false;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.hidden = true; }, 2600);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 2800);
   }
 
   function applyLoadedState(raw) {
     if (!raw) return;
-    var parsed = JSON.parse(raw);
-    state.items = Array.isArray(parsed.items) ? parsed.items : [];
-    state.budget = typeof parsed.budget === 'number' ? parsed.budget : null;
+    try {
+      var parsed = JSON.parse(raw);
+      state.items = Array.isArray(parsed.items) ? parsed.items : [];
+      state.budget = typeof parsed.budget === 'number' ? parsed.budget : null;
+    } catch (e) {
+      state.items = [];
+      state.budget = null;
+    }
   }
 
   async function loadData() {
@@ -365,21 +1392,31 @@
         applyLoadedState(localStorage.getItem(STORAGE_KEY));
       }
     } catch (err) {
-      state = { items: [], budget: null };
+      state = { items: [], budget: null, viewMode: state.viewMode };
     }
   }
 
   async function saveData() {
     try {
-      var payload = JSON.stringify(state);
+      var payload = JSON.stringify({ items: state.items, budget: state.budget });
       if (hasCloudStorage) {
         await window.storage.set(STORAGE_KEY, payload);
       } else {
         localStorage.setItem(STORAGE_KEY, payload);
       }
     } catch (err) {
-      showToast("Couldn't save. Try again in a moment.");
+      showToast("Couldn't save changes. Try again in a moment.");
     }
+  }
+
+  function setViewMode(mode) {
+    state.viewMode = mode;
+    localStorage.setItem(VIEW_KEY, mode);
+    var gridBtn = el('viewGridBtn');
+    var listBtn = el('viewListBtn');
+    if (gridBtn) gridBtn.classList.toggle('active', mode === 'grid');
+    if (listBtn) listBtn.classList.toggle('active', mode === 'list');
+    render();
   }
 
   function setPriorityUI(value) {
@@ -413,16 +1450,21 @@
     el('imgPreview').hidden = true;
     el('imgPreviewTag').src = '';
     el('notesField').hidden = true;
-    el('toggleNotes').textContent = '+ Add a note';
+    el('toggleNotes').textContent = '+ Add a note or specifications';
     el('formTitle').textContent = 'Add something you want';
-    el('submitBtn').textContent = 'Add to list';
+    el('panelBadge').textContent = 'New Item';
+    el('submitBtn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Add to list</span>';
     el('cancelEdit').hidden = true;
+    el('addPanel').classList.remove('editing-active');
   }
 
   function startEdit(id) {
     var item = null;
-    for (var i = 0; i < state.items.length; i++) { if (state.items[i].id === id) { item = state.items[i]; break; } }
+    for (var i = 0; i < state.items.length; i++) {
+      if (state.items[i].id === id) { item = state.items[i]; break; }
+    }
     if (!item) return;
+
     editingId = id;
     el('fName').value = item.name;
     el('fPrice').value = item.price === null || item.price === undefined ? '' : item.price;
@@ -432,17 +1474,30 @@
     updateImagePreview();
     el('fNotes').value = item.notes || '';
     setPriorityUI(item.priority);
+
     el('notesField').hidden = !item.notes;
-    el('toggleNotes').textContent = item.notes ? '\u2013 Hide note' : '+ Add a note';
-    el('formTitle').textContent = 'Edit item';
-    el('submitBtn').textContent = 'Save changes';
+    el('toggleNotes').textContent = item.notes ? '– Hide note' : '+ Add a note or specifications';
+    el('formTitle').textContent = 'Edit wishlist item';
+    el('panelBadge').textContent = 'Editing';
+    el('submitBtn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Save changes</span>';
     el('cancelEdit').hidden = false;
-    el('addPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    var panel = el('addPanel');
+    panel.classList.add('editing-active');
+
+    // On mobile screens, scroll to form; on desktop, smoothly focus input
+    if (window.innerWidth < 1024) {
+      el('sidebarCol').style.display = 'block';
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    el('fName').focus();
   }
 
   async function togglePurchased(id) {
     var item = null;
-    for (var i = 0; i < state.items.length; i++) { if (state.items[i].id === id) { item = state.items[i]; break; } }
+    for (var i = 0; i < state.items.length; i++) {
+      if (state.items[i].id === id) { item = state.items[i]; break; }
+    }
     if (!item) return;
     item.purchased = !item.purchased;
     await saveData();
@@ -458,12 +1513,18 @@
   }
 
   function armDelete(id) {
-    if (deleteArmedId === id) { deleteItem(id); return; }
+    if (deleteArmedId === id) {
+      deleteItem(id);
+      return;
+    }
     deleteArmedId = id;
     render();
     setTimeout(function () {
-      if (deleteArmedId === id) { deleteArmedId = null; render(); }
-    }, 3000);
+      if (deleteArmedId === id) {
+        deleteArmedId = null;
+        render();
+      }
+    }, 3500);
   }
 
   function getFilteredSorted(items) {
@@ -483,71 +1544,183 @@
       if (sort === 'priceLow') return (a.price === null || a.price === undefined ? Infinity : a.price) - (b.price === null || b.price === undefined ? Infinity : b.price);
       if (sort === 'priority') return prioRank[a.priority] - prioRank[b.priority];
       if (sort === 'name') return a.name.localeCompare(b.name);
-      return b.createdAt - a.createdAt;
+      return (b.createdAt || 0) - (a.createdAt || 0);
     });
 
     return out;
   }
 
-  function updateCategoryOptions() {
+  function updateCategoryOptionsAndPills() {
     var select = el('filterCategory');
     var current = select.value;
-    var seen = {};
-    var cats = [];
-    state.items.forEach(function (i) { if (!seen[i.category]) { seen[i.category] = true; cats.push(i.category); } });
-    cats.sort();
-    select.innerHTML = '<option value="">All categories</option>' +
-      cats.map(function (c) { return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>'; }).join('');
+    var counts = {};
+    var unpurchased = state.items.filter(function (i) { return !i.purchased; });
+
+    unpurchased.forEach(function (i) {
+      var c = i.category || 'Uncategorized';
+      counts[c] = (counts[c] || 0) + 1;
+    });
+
+    var cats = Object.keys(counts).sort();
+
+    select.innerHTML = '<option value="">All categories (' + unpurchased.length + ')</option>' +
+      cats.map(function (c) {
+        return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + ' (' + counts[c] + ')</option>';
+      }).join('');
     select.value = cats.indexOf(current) > -1 ? current : '';
+
+    // Quick Category Pills
+    var pillsContainer = el('categoryPills');
+    if (pillsContainer) {
+      var allPill = '<button type="button" class="cat-pill ' + (current === '' ? 'active' : '') + '" data-cat="">All (' + unpurchased.length + ')</button>';
+      var catPills = cats.map(function (c) {
+        var active = current === c ? 'active' : '';
+        return '<button type="button" class="cat-pill ' + active + '" data-cat="' + escapeHtml(c) + '">' + escapeHtml(c) + ' <span style="opacity:0.7">(' + counts[c] + ')</span></button>';
+      }).join('');
+      pillsContainer.innerHTML = allPill + catPills;
+
+      pillsContainer.querySelectorAll('.cat-pill').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          select.value = btn.getAttribute('data-cat');
+          render();
+        });
+      });
+    }
   }
 
+  // Fallback banner placeholder for items without images
+  function getPlaceholderHtml(category) {
+    return '' +
+    '<div class="card-placeholder">' +
+      '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>' +
+        '<polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>' +
+        '<line x1="12" y1="22.08" x2="12" y2="12"></line>' +
+      '</svg>' +
+      '<span>' + escapeHtml(category || 'Wishlist Item') + '</span>' +
+    '</div>';
+  }
+
+  // Grid Card View HTML
+  function itemCardHtml(item) {
+    var priceStr = formatPrice(item.price);
+    var armed = deleteArmedId === item.id;
+    var priorityLabel = item.priority.charAt(0).toUpperCase() + item.priority.slice(1);
+
+    var mediaContent = item.image
+      ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.name) + '" class="card-img" onerror="this.parentElement.innerHTML=window._getCardPlaceholder(\'' + escapeHtml(item.category) + '\')" />'
+      : getPlaceholderHtml(item.category);
+
+    return '' +
+    '<li class="item-card prio-' + item.priority + '" data-id="' + item.id + '">' +
+      '<div class="card-media">' +
+        mediaContent +
+        '<div class="card-badge-layer">' +
+          '<span class="badge-prio ' + item.priority + '">' + priorityLabel + '</span>' +
+          '<span class="badge-cat">' + escapeHtml(item.category) + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-content">' +
+        '<div class="card-top">' +
+          '<h3 class="card-title">' + escapeHtml(item.name) + '</h3>' +
+          (priceStr ? '<span class="card-price">' + priceStr + '</span>' : '') +
+        '</div>' +
+        (item.notes ? '<p class="card-notes">' + escapeHtml(item.notes) + '</p>' : '<div style="flex:1"></div>') +
+        '<div class="card-actions">' +
+          '<button type="button" class="got-btn" data-action="purchase" data-id="' + item.id + '" title="Mark as acquired" aria-label="Mark as acquired">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+            '<span>Got it</span>' +
+          '</button>' +
+          '<div class="card-icon-btns">' +
+            (item.link ? '<a href="' + escapeHtml(item.link) + '" target="_blank" rel="noopener noreferrer" class="icon-action-btn" title="Open product link" aria-label="Open product link">' +
+              '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>' +
+            '</a>' : '') +
+            '<button type="button" class="icon-action-btn" data-action="edit" data-id="' + item.id + '" title="Edit item" aria-label="Edit item">' +
+              '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
+            '</button>' +
+            '<button type="button" class="icon-action-btn delete-btn ' + (armed ? 'delete-armed' : '') + '" data-action="delete" data-id="' + item.id + '" title="' + (armed ? 'Confirm deletion' : 'Delete item') + '" aria-label="Delete item">' +
+              (armed ? 'Confirm?' : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>') +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</li>';
+  }
+
+  // Row List View HTML
   function itemRowHtml(item) {
     var priceStr = formatPrice(item.price);
     var armed = deleteArmedId === item.id;
     var priorityLabel = item.priority.charAt(0).toUpperCase() + item.priority.slice(1);
-    var thumbHtml = item.image ? '<div class="item-thumb"><img src="' + escapeHtml(item.image) + '" alt="" onerror="this.parentElement.hidden=true" /></div>' : '';
+    var thumbHtml = item.image
+      ? '<div class="row-thumb"><img src="' + escapeHtml(item.image) + '" alt="" onerror="this.parentElement.hidden=true" /></div>'
+      : '';
+
     return '' +
     '<li class="item-row prio-' + item.priority + '" data-id="' + item.id + '">' +
+      '<button class="check-circle" data-action="purchase" data-id="' + item.id + '" title="Mark as acquired" aria-label="Mark as acquired">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+      '</button>' +
       thumbHtml +
-      '<button class="check" data-action="purchase" data-id="' + item.id + '" aria-label="Mark as purchased"></button>' +
-      '<div class="item-main">' +
-        '<div class="item-top">' +
-          '<span class="item-name">' + escapeHtml(item.name) + '</span>' +
-          (priceStr ? '<span class="item-price">' + priceStr + '</span>' : '') +
+      '<div class="row-main">' +
+        '<div class="row-top">' +
+          '<span class="row-name">' + escapeHtml(item.name) + '</span>' +
+          '<div class="row-meta">' +
+            '<span class="badge-cat">' + escapeHtml(item.category) + '</span>' +
+            '<span class="badge-prio ' + item.priority + '">' + priorityLabel + '</span>' +
+          '</div>' +
         '</div>' +
-        '<div class="item-meta">' +
-          '<span class="item-cat">' + escapeHtml(item.category) + '</span>' +
-          '<span class="item-prio">' + priorityLabel + ' priority</span>' +
-        '</div>' +
-        (item.notes ? '<p class="item-notes">' + escapeHtml(item.notes) + '</p>' : '') +
-        '<div class="item-actions">' +
-          (item.link ? '<a href="' + escapeHtml(item.link) + '" target="_blank" rel="noopener noreferrer" class="text-btn">Open link</a>' : '') +
-          '<button class="text-btn" data-action="edit" data-id="' + item.id + '">Edit</button>' +
-          '<button class="text-btn danger" data-action="delete" data-id="' + item.id + '">' + (armed ? 'Confirm delete' : 'Delete') + '</button>' +
+        (item.notes ? '<p class="row-notes">' + escapeHtml(item.notes) + '</p>' : '') +
+      '</div>' +
+      '<div class="row-right">' +
+        (priceStr ? '<span class="row-price">' + priceStr + '</span>' : '') +
+        '<div class="row-actions">' +
+          (item.link ? '<a href="' + escapeHtml(item.link) + '" target="_blank" rel="noopener noreferrer" class="icon-action-btn" title="Open product link" aria-label="Open product link">' +
+            '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>' +
+          '</a>' : '') +
+          '<button type="button" class="icon-action-btn" data-action="edit" data-id="' + item.id + '" title="Edit item" aria-label="Edit item">' +
+            '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
+          '</button>' +
+          '<button type="button" class="icon-action-btn delete-btn ' + (armed ? 'delete-armed' : '') + '" data-action="delete" data-id="' + item.id + '" title="' + (armed ? 'Confirm deletion' : 'Delete item') + '" aria-label="Delete item">' +
+            (armed ? 'Confirm?' : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>') +
+          '</button>' +
         '</div>' +
       '</div>' +
     '</li>';
   }
 
+  // Purchased items row
   function purchasedRowHtml(item) {
     var priceStr = formatPrice(item.price);
     var armed = deleteArmedId === item.id;
-    var thumbHtml = item.image ? '<div class="item-thumb"><img src="' + escapeHtml(item.image) + '" alt="" onerror="this.parentElement.hidden=true" /></div>' : '';
+    var thumbHtml = item.image
+      ? '<div class="row-thumb"><img src="' + escapeHtml(item.image) + '" alt="" onerror="this.parentElement.hidden=true" /></div>'
+      : '';
+
     return '' +
     '<li class="item-row purchased-row" data-id="' + item.id + '">' +
+      '<button class="check-circle checked" data-action="purchase" data-id="' + item.id + '" title="Restore to wishlist" aria-label="Restore to wishlist">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+      '</button>' +
       thumbHtml +
-      '<button class="check checked" data-action="purchase" data-id="' + item.id + '" aria-label="Move back to wishlist"></button>' +
-      '<div class="item-main">' +
-        '<div class="item-top">' +
-          '<span class="item-name">' + escapeHtml(item.name) + '</span>' +
-          (priceStr ? '<span class="item-price">' + priceStr + '</span>' : '') +
+      '<div class="row-main">' +
+        '<div class="row-top">' +
+          '<span class="row-name">' + escapeHtml(item.name) + '</span>' +
+          '<span class="badge-cat">' + escapeHtml(item.category) + '</span>' +
         '</div>' +
-        '<div class="item-actions">' +
-          '<button class="text-btn danger" data-action="delete" data-id="' + item.id + '">' + (armed ? 'Confirm remove' : 'Remove') + '</button>' +
+      '</div>' +
+      '<div class="row-right">' +
+        (priceStr ? '<span class="row-price" style="color:var(--text-muted)">' + priceStr + '</span>' : '') +
+        '<div class="row-actions">' +
+          '<button type="button" class="icon-action-btn delete-btn ' + (armed ? 'delete-armed' : '') + '" data-action="delete" data-id="' + item.id + '" title="Remove from list">' +
+            (armed ? 'Confirm?' : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>') +
+          '</button>' +
         '</div>' +
       '</div>' +
     '</li>';
   }
+
+  window._getCardPlaceholder = getPlaceholderHtml;
 
   function attachRowListeners() {
     document.querySelectorAll('[data-action="purchase"]').forEach(function (btn) {
@@ -562,46 +1735,94 @@
   }
 
   function render() {
-    updateCategoryOptions();
+    updateCategoryOptionsAndPills();
 
     var unpurchased = state.items.filter(function (i) { return !i.purchased; });
     var purchased = state.items.filter(function (i) { return i.purchased; });
 
+    // 1. Stats Calculation
     el('statCount').textContent = unpurchased.length;
     var totalVal = unpurchased.reduce(function (sum, i) { return sum + (i.price || 0); }, 0);
     el('statTotal').textContent = formatPrice(totalVal) || '₹0';
 
+    // 2. Budget Card & Progress Meter
     var budgetStat = el('budgetStat');
-    if (state.budget !== null) {
+    var meterTrack = el('budgetMeterTrack');
+    var meterFill = el('budgetMeterFill');
+    var badge = el('budgetPercentBadge');
+
+    if (state.budget !== null && state.budget > 0) {
       var remaining = state.budget - totalVal;
-      el('statBudget').textContent = formatPrice(remaining);
-      el('budgetLabel').textContent = remaining >= 0 ? 'left in budget' : 'over budget';
-      budgetStat.classList.toggle('over', remaining < 0);
+      var pct = Math.round((totalVal / state.budget) * 100);
+      el('statBudget').textContent = formatPrice(Math.abs(remaining));
+      
+      meterTrack.hidden = false;
+      meterFill.style.width = Math.min(100, pct) + '%';
+
+      if (remaining < 0) {
+        el('budgetLabel').textContent = 'over budget limit';
+        badge.textContent = '+' + (pct - 100) + '% over';
+        budgetStat.classList.add('over');
+        budgetStat.classList.remove('good');
+        meterFill.style.backgroundColor = 'var(--coral)';
+      } else {
+        el('budgetLabel').textContent = 'remaining in budget';
+        badge.textContent = pct + '% used';
+        budgetStat.classList.remove('over');
+        if (pct >= 80) {
+          meterFill.style.backgroundColor = 'var(--marigold)';
+          budgetStat.classList.remove('good');
+        } else {
+          meterFill.style.backgroundColor = 'var(--sage)';
+          budgetStat.classList.add('good');
+        }
+      }
     } else {
       el('statBudget').textContent = '—';
-      el('budgetLabel').textContent = 'Set a budget';
-      budgetStat.classList.remove('over');
+      el('budgetLabel').textContent = 'Click to set spending limit';
+      badge.textContent = 'Budget';
+      budgetStat.classList.remove('over', 'good');
+      meterTrack.hidden = true;
     }
 
+    // 3. Search clear button
+    var searchVal = el('searchInput').value.trim();
+    el('searchClearBtn').hidden = searchVal.length === 0;
+
+    // 4. Filter & Sort Items
     var filtered = getFilteredSorted(unpurchased);
     var listEl = el('itemList');
     var emptyEl = el('emptyState');
     el('loadingState').hidden = true;
 
+    // Set view mode class
+    if (state.viewMode === 'grid') {
+      listEl.className = 'card-grid';
+    } else {
+      listEl.className = 'item-list';
+    }
+
     if (state.items.length === 0) {
       listEl.hidden = true;
       emptyEl.hidden = false;
-      emptyEl.innerHTML = '<p>Nothing here yet.</p><p>Add the first thing you\u2019re eyeing above.</p>';
+      el('emptyTitle').textContent = 'Your wishlist is empty';
+      el('emptySubtitle').textContent = 'Add the first thing you\u2019re eyeing using the form on the left.';
     } else if (filtered.length === 0) {
       listEl.hidden = true;
       emptyEl.hidden = false;
-      emptyEl.innerHTML = '<p>No matches.</p><p>Try a different search or category.</p>';
+      el('emptyTitle').textContent = 'No matching items found';
+      el('emptySubtitle').textContent = 'Try adjusting your search query or selecting a different category.';
     } else {
       emptyEl.hidden = true;
       listEl.hidden = false;
-      listEl.innerHTML = filtered.map(itemRowHtml).join('');
+      if (state.viewMode === 'grid') {
+        listEl.innerHTML = filtered.map(itemCardHtml).join('');
+      } else {
+        listEl.innerHTML = filtered.map(itemRowHtml).join('');
+      }
     }
 
+    // 5. Purchased Section
     el('purchasedWrap').hidden = purchased.length === 0;
     el('purchasedCount').textContent = purchased.length;
     el('purchasedList').innerHTML = purchased.map(purchasedRowHtml).join('');
@@ -610,29 +1831,41 @@
   }
 
   function initListeners() {
+    // Priority Picker Buttons
     document.querySelectorAll('.prio-btn').forEach(function (btn) {
       btn.addEventListener('click', function () { setPriorityUI(btn.getAttribute('data-value')); });
     });
 
+    // Image URL Live Preview
     el('fImage').addEventListener('input', updateImagePreview);
     el('imgPreviewTag').onerror = function () { el('imgPreview').hidden = true; };
 
+    // Notes Toggle
     el('toggleNotes').addEventListener('click', function () {
       var field = el('notesField');
       field.hidden = !field.hidden;
-      el('toggleNotes').textContent = field.hidden ? '+ Add a note' : '\u2013 Hide note';
+      el('toggleNotes').textContent = field.hidden ? '+ Add a note or specifications' : '– Hide note';
       if (!field.hidden) el('fNotes').focus();
     });
 
+    // View Switcher Buttons
+    el('viewGridBtn').addEventListener('click', function () { setViewMode('grid'); });
+    el('viewListBtn').addEventListener('click', function () { setViewMode('list'); });
+
+    // Item Form Submit
     el('itemForm').addEventListener('submit', async function (e) {
       e.preventDefault();
       var name = el('fName').value.trim();
       if (!name) return;
       var priceVal = el('fPrice').value;
+
       var existing = null;
       if (editingId) {
-        for (var i = 0; i < state.items.length; i++) { if (state.items[i].id === editingId) { existing = state.items[i]; break; } }
+        for (var i = 0; i < state.items.length; i++) {
+          if (state.items[i].id === editingId) { existing = state.items[i]; break; }
+        }
       }
+
       var item = {
         id: editingId || uid(),
         name: name,
@@ -643,15 +1876,17 @@
         image: el('fImage').value.trim() || null,
         notes: el('fNotes').value.trim() || null,
         purchased: existing ? existing.purchased : false,
-        createdAt: existing ? existing.createdAt : Date.now()
+        createdAt: existing ? (existing.createdAt || Date.now()) : Date.now()
       };
 
       if (editingId) {
         var idx = -1;
-        for (var j = 0; j < state.items.length; j++) { if (state.items[j].id === editingId) { idx = j; break; } }
+        for (var j = 0; j < state.items.length; j++) {
+          if (state.items[j].id === editingId) { idx = j; break; }
+        }
         if (idx > -1) state.items[idx] = item;
       } else {
-        state.items.push(item);
+        state.items.unshift(item);
       }
 
       await saveData();
@@ -659,17 +1894,47 @@
       render();
     });
 
+    // Cancel Edit
     el('cancelEdit').addEventListener('click', resetForm);
 
+    // Search & Filter Events
     el('searchInput').addEventListener('input', render);
+    el('searchClearBtn').addEventListener('click', function () {
+      el('searchInput').value = '';
+      el('searchInput').focus();
+      render();
+    });
     el('filterCategory').addEventListener('change', render);
     el('sortSelect').addEventListener('change', render);
 
-    el('purchasedToggle').addEventListener('click', function () {
-      var list = el('purchasedList');
-      list.hidden = !list.hidden;
+    // Keyboard Shortcuts: '/' to search, 'Esc' to clear/cancel
+    document.addEventListener('keydown', function (e) {
+      var tag = e.target.tagName.toLowerCase();
+      var isInput = tag === 'input' || tag === 'textarea' || tag === 'select';
+      if (e.key === '/' && !isInput) {
+        e.preventDefault();
+        el('searchInput').focus();
+      } else if (e.key === 'Escape') {
+        if (document.activeElement === el('searchInput')) {
+          el('searchInput').blur();
+        }
+        if (editingId) {
+          resetForm();
+        }
+      }
     });
 
+    // Purchased Accordion Toggle
+    el('purchasedToggle').addEventListener('click', function () {
+      var content = el('purchasedContent');
+      content.hidden = !content.hidden;
+      var caret = el('purchasedCaret');
+      if (caret) {
+        caret.style.transform = content.hidden ? 'none' : 'rotate(180deg)';
+      }
+    });
+
+    // Budget Inline Editing
     el('budgetDisplay').addEventListener('click', function () {
       el('budgetDisplay').hidden = true;
       el('budgetEdit').hidden = false;
@@ -686,13 +1951,42 @@
       render();
     });
 
+    el('budgetCancel').addEventListener('click', function () {
+      el('budgetDisplay').hidden = false;
+      el('budgetEdit').hidden = true;
+    });
+
     el('budgetInput').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); el('budgetSave').click(); }
+      if (e.key === 'Escape') { e.preventDefault(); el('budgetCancel').click(); }
+    });
+
+    // Mobile Add Panel Toggle
+    var mobileToggle = el('mobileAddToggle');
+    if (mobileToggle) {
+      mobileToggle.addEventListener('click', function () {
+        var sidebar = el('sidebarCol');
+        var isHidden = window.getComputedStyle(sidebar).display === 'none';
+        sidebar.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) {
+          el('fName').focus();
+          sidebar.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
+
+    // Window resize handler for view mode responsiveness
+    window.addEventListener('resize', function () {
+      if (window.innerWidth >= 1024) {
+        el('sidebarCol').style.display = '';
+      }
     });
   }
 
   async function init() {
     initListeners();
+    // Initialize active view mode button
+    setViewMode(state.viewMode);
     await loadData();
     render();
   }
