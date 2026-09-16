@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>Wishlist Keeper</title>
+<style>
+  :root {
+    --ink: #141C17;
+    --panel: #202B23;
+    --panel-line: #33433A;
+    --paper: #EDE6D3;
+    --paper-ink: #2C2415;
+    --paper-line: #D8CDA9;
+    --paper-field: #FBF8F0;
+    --marigold: #E3A23E;
+    --marigold-ink: #4A2F08;
+    --coral: #D9604C;
+    --sage: #7FA37A;
+    --text: #ECEEE8;
+    --text-muted: #9FB0A5;
+    --font-serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 28px 18px 80px; }
+
+  /* Header */
+  .site-header { margin-bottom: 22px; }
+  .site-header h1 {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .site-header .subtitle { margin: 0; color: var(--text-muted); font-size: 15px; max-width: 42ch; }
+
+  /* Add panel */
+  .add-panel {
+    background: var(--paper);
+    color: var(--paper-ink);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.3);
+  }
+  .add-panel h2 { font-family: var(--font-serif); font-size: 19px; margin: 0 0 14px; font-weight: 600; }
+  .field { margin-bottom: 12px; }
+  .field label, .field-label {
+    display: block;
+    font-size: 13px;
+    color: #5C513A;
+    margin-bottom: 4px;
+  }
+  .field input, .field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-field);
+    color: var(--paper-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+  }
+  .field textarea { resize: vertical; min-height: 44px; }
+  .field input:focus, .field textarea:focus {
+    outline: 2px solid var(--marigold);
+    outline-offset: 1px;
+    border-color: var(--marigold);
+  }
+  .img-preview { margin-top: 8px; width: 72px; height: 72px; border-radius: 8px; overflow: hidden; border: 1px solid var(--paper-line); background: var(--paper-field); }
+  .img-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .field-row { display: flex; gap: 12px; }
+  .field-row .field { flex: 1; margin-bottom: 12px; }
+
+  .priority-picker { display: flex; border: 1px solid var(--paper-line); border-radius: 8px; overflow: hidden; }
+  .prio-btn {
+    flex: 1; padding: 9px 0; border: none; border-right: 1px solid var(--paper-line);
+    background: var(--paper-field); color: var(--paper-ink);
+    font-family: var(--font-sans); font-size: 14px; cursor: pointer;
+  }
+  .prio-btn:last-child { border-right: none; }
+  .prio-btn.active[data-value="low"] { background: var(--sage); color: #10230F; }
+  .prio-btn.active[data-value="medium"] { background: var(--marigold); color: var(--marigold-ink); }
+  .prio-btn.active[data-value="high"] { background: var(--coral); color: #370E07; }
+
+  .link-btn {
+    background: none; border: none; color: #6B5A2E; font-size: 13px;
+    padding: 0; margin: -4px 0 12px; cursor: pointer; text-decoration: underline;
+  }
+
+  .primary-btn {
+    background: var(--ink); color: var(--paper); border: none;
+    padding: 11px 20px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  .primary-btn:hover { background: #24312A; }
+  .ghost-btn {
+    background: transparent; border: 1px solid var(--paper-line); color: var(--paper-ink);
+    padding: 11px 16px; border-radius: 8px; font-size: 15px; cursor: pointer;
+  }
+  .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+
+  /* Stats */
+  .stats { display: flex; gap: 10px; margin-bottom: 18px; }
+  .stat { flex: 1; background: var(--panel); border: 1px solid var(--panel-line); border-radius: 8px; padding: 12px 14px; }
+  .stat-num { display: block; font-family: var(--font-serif); font-size: 20px; font-weight: 600; color: var(--marigold); }
+  .stat-label { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .stat.over .stat-num { color: var(--coral); }
+  .budget-display { cursor: pointer; }
+  .budget-edit { display: flex; gap: 6px; align-items: center; }
+  .budget-edit input {
+    width: 100%; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--panel-line);
+    background: var(--ink); color: var(--text); font-size: 14px;
+  }
+
+  /* Controls */
+  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .controls input, .controls select {
+    background: var(--panel); border: 1px solid var(--panel-line); color: var(--text);
+    padding: 9px 10px; border-radius: 8px; font-size: 14px; font-family: var(--font-sans);
+  }
+  #searchInput { flex: 2; min-width: 140px; }
+  #filterCategory, #sortSelect { flex: 1; min-width: 120px; }
+
+  /* List */
+  .list-wrap { margin-bottom: 20px; }
+  .item-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--panel-line); }
+  .item-row { display: flex; align-items: flex-start; gap: 12px; padding: 14px 4px 14px 12px; border-bottom: 1px solid var(--panel-line); border-left: 3px solid transparent; }
+  .item-row.prio-high { border-left-color: var(--coral); }
+  .item-row.prio-medium { border-left-color: var(--marigold); }
+  .item-row.prio-low { border-left-color: var(--sage); }
+
+  .item-thumb { width: 52px; height: 52px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--panel-line); background: var(--panel); }
+  .item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .check {
+    width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--panel-line);
+    background: transparent; flex-shrink: 0; margin-top: 3px; cursor: pointer;
+    color: #10230F; font-size: 12px; line-height: 1; padding: 0;
+  }
+  .check.checked { background: var(--sage); border-color: var(--sage); }
+  .check.checked::after { content: '\2713'; }
+
+  .item-main { flex: 1; min-width: 0; }
+  .item-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .item-name { font-family: var(--font-serif); font-size: 16.5px; font-weight: 600; }
+  .item-price { font-size: 15px; font-weight: 600; color: var(--marigold); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .item-meta { display: flex; gap: 10px; font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+  .item-notes { font-size: 13.5px; color: var(--text-muted); margin: 6px 0 0; }
+  .item-actions { display: flex; gap: 14px; margin-top: 8px; flex-wrap: wrap; }
+  .text-btn { background: none; border: none; padding: 0; color: var(--text-muted); font-size: 13px; cursor: pointer; text-decoration: none; font-family: var(--font-sans); }
+  .text-btn:hover, .text-btn:focus-visible { color: var(--text); }
+  .text-btn.danger { color: var(--coral); }
+  a.text-btn { color: var(--marigold); }
+
+  /* Purchased */
+  .purchased-wrap { margin-bottom: 20px; }
+  .section-toggle {
+    background: none; border: none; color: var(--text-muted); font-size: 14px; padding: 10px 0;
+    cursor: pointer; border-top: 1px solid var(--panel-line); width: 100%; text-align: left; font-family: var(--font-sans);
+  }
+  .item-row.purchased-row .item-name { text-decoration: line-through; color: var(--text-muted); }
+  .item-row.purchased-row .item-thumb { opacity: 0.55; }
+
+  /* Empty / loading */
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+  .empty-state p { margin: 4px 0; }
+  .empty-state p:first-child { font-family: var(--font-serif); font-size: 18px; color: var(--text); }
+  .loading { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 14px; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--coral); color: #fff; padding: 10px 18px; border-radius: 8px;
+    font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  }
+
+  :focus-visible { outline: 2px solid var(--marigold); outline-offset: 2px; }
+
+  @media (max-width: 380px) {
+    .stats { flex-direction: column; }
+    .field-row { flex-direction: column; gap: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site-header">
+    <h1>Wishlist Keeper</h1>
+    <p class="subtitle">Track what you want, what it costs, and what matters most.</p>
+  </header>
+
+  <section class="add-panel" id="addPanel">
+    <h2 id="formTitle">Add something you want</h2>
+    <form id="itemForm">
+      <div class="field">
+        <label for="fName">Name</label>
+        <input type="text" id="fName" required placeholder="e.g. Mechanical keyboard" />
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="fPrice">Price</label>
+          <input type="number" id="fPrice" min="0" step="1" inputmode="decimal" placeholder="0" />
+        </div>
+        <div class="field">
+          <label for="fCategory">Category</label>
+          <input type="text" id="fCategory" list="categoryList" placeholder="Electronics" />
+          <datalist id="categoryList">
+            <option value="Electronics"></option>
+            <option value="Books"></option>
+            <option value="Clothing"></option>
+            <option value="Home"></option>
+            <option value="Hobbies"></option>
+            <option value="Other"></option>
+          </datalist>
+        </div>
+      </div>
+      <div class="field">
+        <span class="field-label">Priority</span>
+        <div class="priority-picker" id="priorityPicker" role="group" aria-label="Priority">
+          <button type="button" class="prio-btn" data-value="low" aria-pressed="false">Low</button>
+          <button type="button" class="prio-btn active" data-value="medium" aria-pressed="true">Medium</button>
+          <button type="button" class="prio-btn" data-value="high" aria-pressed="false">High</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="fLink">Link</label>
+        <input type="url" id="fLink" placeholder="Paste a link (optional)" />
+      </div>
+      <div class="field">
+        <label for="fImage">Image URL</label>
+        <input type="url" id="fImage" placeholder="Paste a photo link (optional)" />
+        <div class="img-preview" id="imgPreview" hidden>
+          <img id="imgPreviewTag" src="" alt="Preview" />
+        </div>
+      </div>
+      <button type="button" id="toggleNotes" class="link-btn">+ Add a note</button>
+      <div class="field" id="notesField" hidden>
+        <label for="fNotes">Notes</label>
+        <textarea id="fNotes" rows="2" placeholder="Size, color, why you want it..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" id="cancelEdit" class="ghost-btn" hidden>Cancel</button>
+        <button type="submit" id="submitBtn" class="primary-btn">Add to list</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="stats">
+    <div class="stat">
+      <span class="stat-num" id="statCount">0</span>
+      <span class="stat-label">items on your list</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num" id="statTotal">₹0</span>
+      <span class="stat-label">total value</span>
+    </div>
+    <div class="stat" id="budgetStat">
+      <div class="budget-display" id="budgetDisplay">
+        <span class="stat-num" id="statBudget">—</span>
+        <span class="stat-label" id="budgetLabel">Set a budget</span>
+      </div>
+      <div class="budget-edit" id="budgetEdit" hidden>
+        <input type="number" id="budgetInput" min="0" step="1" inputmode="decimal" placeholder="₹ amount" />
+        <button type="button" id="budgetSave" class="text-btn">Save</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="controls">
+    <input type="text" id="searchInput" placeholder="Search your list" />
+    <select id="filterCategory"><option value="">All categories</option></select>
+    <select id="sortSelect">
+      <option value="newest">Newest first</option>
+      <option value="priceHigh">Price: high to low</option>
+      <option value="priceLow">Price: low to high</option>
+      <option value="priority">Priority</option>
+      <option value="name">Name A–Z</option>
+    </select>
+  </section>
+
+  <section class="list-wrap">
+    <div id="loadingState" class="loading">Loading your list…</div>
+    <ul id="itemList" class="item-list" hidden></ul>
+    <div id="emptyState" class="empty-state" hidden></div>
+  </section>
+
+  <section class="purchased-wrap" id="purchasedWrap" hidden>
+    <button type="button" id="purchasedToggle" class="section-toggle">Already got these (<span id="purchasedCount">0</span>)</button>
+    <ul id="purchasedList" class="item-list purchased" hidden></ul>
+  </section>
+
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+  var STORAGE_KEY = 'wishlist:data';
+  var hasCloudStorage = typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function';
+  var state = { items: [], budget: null };
+  var editingId = null;
+  var deleteArmedId = null;
+  var currentPriority = 'medium';
+
+  function el(id) { return document.getElementById(id); }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str === null || str === undefined ? '' : String(str);
+    return div.innerHTML;
+  }
+
+  function formatPrice(n) {
+    if (n === null || n === undefined || n === '' || isNaN(n)) return null;
+    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
+  }
+
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  var toastTimer = null;
+  function showToast(msg) {
+    var t = el('toast');
+    t.textContent = msg;
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 2600);
+  }
+
+  function applyLoadedState(raw) {
+    if (!raw) return;
+    var parsed = JSON.parse(raw);
+    state.items = Array.isArray(parsed.items) ? parsed.items : [];
+    state.budget = typeof parsed.budget === 'number' ? parsed.budget : null;
+  }
+
+  async function loadData() {
+    try {
+      if (hasCloudStorage) {
+        var res = await window.storage.get(STORAGE_KEY);
+        applyLoadedState(res && res.value);
+      } else {
+        applyLoadedState(localStorage.getItem(STORAGE_KEY));
+      }
+    } catch (err) {
+      state = { items: [], budget: null };
+    }
+  }
+
+  async function saveData() {
+    try {
+      var payload = JSON.stringify(state);
+      if (hasCloudStorage) {
+        await window.storage.set(STORAGE_KEY, payload);
+      } else {
+        localStorage.setItem(STORAGE_KEY, payload);
+      }
+    } catch (err) {
+      showToast("Couldn't save. Try again in a moment.");
+    }
+  }
+
+  function setPriorityUI(value) {
+    currentPriority = value;
+    var btns = document.querySelectorAll('.prio-btn');
+    for (var i = 0; i < btns.length; i++) {
+      var b = btns[i];
+      var isActive = b.getAttribute('data-value') === value;
+      b.classList.toggle('active', isActive);
+      b.setAttribute('aria-pressed', String(isActive));
+    }
+  }
+
+  function updateImagePreview() {
+    var url = el('fImage').value.trim();
+    var preview = el('imgPreview');
+    var tag = el('imgPreviewTag');
+    if (url) {
+      tag.src = url;
+      preview.hidden = false;
+    } else {
+      tag.src = '';
+      preview.hidden = true;
+    }
+  }
+
+  function resetForm() {
+    editingId = null;
+    el('itemForm').reset();
+    setPriorityUI('medium');
+    el('imgPreview').hidden = true;
+    el('imgPreviewTag').src = '';
+    el('notesField').hidden = true;
+    el('toggleNotes').textContent = '+ Add a note';
+    el('formTitle').textContent = 'Add something you want';
+    el('submitBtn').textContent = 'Add to list';
+    el('cancelEdit').hidden = true;
+  }
+
+  function startEdit(id) {
+    var item = null;
+    for (var i = 0; i < state.items.length; i++) { if (state.items[i].id === id) { item = state.items[i]; break; } }
+    if (!item) return;
+    editingId = id;
+    el('fName').value = item.name;
+    el('fPrice').value = item.price === null || item.price === undefined ? '' : item.price;
+    el('fCategory').value = item.category === 'Uncategorized' ? '' : item.category;
+    el('fLink').value = item.link || '';
+    el('fImage').value = item.image || '';
+    updateImagePreview();
+    el('fNotes').value = item.notes || '';
+    setPriorityUI(item.priority);
+    el('notesField').hidden = !item.notes;
+    el('toggleNotes').textContent = item.notes ? '\u2013 Hide note' : '+ Add a note';
+    el('formTitle').textContent = 'Edit item';
+    el('submitBtn').textContent = 'Save changes';
+    el('cancelEdit').hidden = false;
+    el('addPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function togglePurchased(id) {
+    var item = null;
+    for (var i = 0; i < state.items.length; i++) { if (state.items[i].id === id) { item = state.items[i]; break; } }
+    if (!item) return;
+    item.purchased = !item.purchased;
+    await saveData();
+    render();
+  }
+
+  async function deleteItem(id) {
+    state.items = state.items.filter(function (i) { return i.id !== id; });
+    if (editingId === id) resetForm();
+    await saveData();
+    deleteArmedId = null;
+    render();
+  }
+
+  function armDelete(id) {
+    if (deleteArmedId === id) { deleteItem(id); return; }
+    deleteArmedId = id;
+    render();
+    setTimeout(function () {
+      if (deleteArmedId === id) { deleteArmedId = null; render(); }
+    }, 3000);
+  }
+
+  function getFilteredSorted(items) {
+    var q = el('searchInput').value.trim().toLowerCase();
+    var cat = el('filterCategory').value;
+    var sort = el('sortSelect').value;
+
+    var out = items.filter(function (i) {
+      if (q && i.name.toLowerCase().indexOf(q) === -1 && (i.notes || '').toLowerCase().indexOf(q) === -1) return false;
+      if (cat && i.category !== cat) return false;
+      return true;
+    });
+
+    var prioRank = { high: 0, medium: 1, low: 2 };
+    out = out.slice().sort(function (a, b) {
+      if (sort === 'priceHigh') return (b.price === null || b.price === undefined ? -1 : b.price) - (a.price === null || a.price === undefined ? -1 : a.price);
+      if (sort === 'priceLow') return (a.price === null || a.price === undefined ? Infinity : a.price) - (b.price === null || b.price === undefined ? Infinity : b.price);
+      if (sort === 'priority') return prioRank[a.priority] - prioRank[b.priority];
+      if (sort === 'name') return a.name.localeCompare(b.name);
+      return b.createdAt - a.createdAt;
+    });
+
+    return out;
+  }
+
+  function updateCategoryOptions() {
+    var select = el('filterCategory');
+    var current = select.value;
+    var seen = {};
+    var cats = [];
+    state.items.forEach(function (i) { if (!seen[i.category]) { seen[i.category] = true; cats.push(i.category); } });
+    cats.sort();
+    select.innerHTML = '<option value="">All categories</option>' +
+      cats.map(function (c) { return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>'; }).join('');
+    select.value = cats.indexOf(current) > -1 ? current : '';
+  }
+
+  function itemRowHtml(item) {
+    var priceStr = formatPrice(item.price);
+    var armed = deleteArmedId === item.id;
+    var priorityLabel = item.priority.charAt(0).toUpperCase() + item.priority.slice(1);
+    var thumbHtml = item.image ? '<div class="item-thumb"><img src="' + escapeHtml(item.image) + '" alt="" onerror="this.parentElement.hidden=true" /></div>' : '';
+    return '' +
+    '<li class="item-row prio-' + item.priority + '" data-id="' + item.id + '">' +
+      thumbHtml +
+      '<button class="check" data-action="purchase" data-id="' + item.id + '" aria-label="Mark as purchased"></button>' +
+      '<div class="item-main">' +
+        '<div class="item-top">' +
+          '<span class="item-name">' + escapeHtml(item.name) + '</span>' +
+          (priceStr ? '<span class="item-price">' + priceStr + '</span>' : '') +
+        '</div>' +
+        '<div class="item-meta">' +
+          '<span class="item-cat">' + escapeHtml(item.category) + '</span>' +
+          '<span class="item-prio">' + priorityLabel + ' priority</span>' +
+        '</div>' +
+        (item.notes ? '<p class="item-notes">' + escapeHtml(item.notes) + '</p>' : '') +
+        '<div class="item-actions">' +
+          (item.link ? '<a href="' + escapeHtml(item.link) + '" target="_blank" rel="noopener noreferrer" class="text-btn">Open link</a>' : '') +
+          '<button class="text-btn" data-action="edit" data-id="' + item.id + '">Edit</button>' +
+          '<button class="text-btn danger" data-action="delete" data-id="' + item.id + '">' + (armed ? 'Confirm delete' : 'Delete') + '</button>' +
+        '</div>' +
+      '</div>' +
+    '</li>';
+  }
+
+  function purchasedRowHtml(item) {
+    var priceStr = formatPrice(item.price);
+    var armed = deleteArmedId === item.id;
+    var thumbHtml = item.image ? '<div class="item-thumb"><img src="' + escapeHtml(item.image) + '" alt="" onerror="this.parentElement.hidden=true" /></div>' : '';
+    return '' +
+    '<li class="item-row purchased-row" data-id="' + item.id + '">' +
+      thumbHtml +
+      '<button class="check checked" data-action="purchase" data-id="' + item.id + '" aria-label="Move back to wishlist"></button>' +
+      '<div class="item-main">' +
+        '<div class="item-top">' +
+          '<span class="item-name">' + escapeHtml(item.name) + '</span>' +
+          (priceStr ? '<span class="item-price">' + priceStr + '</span>' : '') +
+        '</div>' +
+        '<div class="item-actions">' +
+          '<button class="text-btn danger" data-action="delete" data-id="' + item.id + '">' + (armed ? 'Confirm remove' : 'Remove') + '</button>' +
+        '</div>' +
+      '</div>' +
+    '</li>';
+  }
+
+  function attachRowListeners() {
+    document.querySelectorAll('[data-action="purchase"]').forEach(function (btn) {
+      btn.addEventListener('click', function () { togglePurchased(btn.getAttribute('data-id')); });
+    });
+    document.querySelectorAll('[data-action="edit"]').forEach(function (btn) {
+      btn.addEventListener('click', function () { startEdit(btn.getAttribute('data-id')); });
+    });
+    document.querySelectorAll('[data-action="delete"]').forEach(function (btn) {
+      btn.addEventListener('click', function () { armDelete(btn.getAttribute('data-id')); });
+    });
+  }
+
+  function render() {
+    updateCategoryOptions();
+
+    var unpurchased = state.items.filter(function (i) { return !i.purchased; });
+    var purchased = state.items.filter(function (i) { return i.purchased; });
+
+    el('statCount').textContent = unpurchased.length;
+    var totalVal = unpurchased.reduce(function (sum, i) { return sum + (i.price || 0); }, 0);
+    el('statTotal').textContent = formatPrice(totalVal) || '₹0';
+
+    var budgetStat = el('budgetStat');
+    if (state.budget !== null) {
+      var remaining = state.budget - totalVal;
+      el('statBudget').textContent = formatPrice(remaining);
+      el('budgetLabel').textContent = remaining >= 0 ? 'left in budget' : 'over budget';
+      budgetStat.classList.toggle('over', remaining < 0);
+    } else {
+      el('statBudget').textContent = '—';
+      el('budgetLabel').textContent = 'Set a budget';
+      budgetStat.classList.remove('over');
+    }
+
+    var filtered = getFilteredSorted(unpurchased);
+    var listEl = el('itemList');
+    var emptyEl = el('emptyState');
+    el('loadingState').hidden = true;
+
+    if (state.items.length === 0) {
+      listEl.hidden = true;
+      emptyEl.hidden = false;
+      emptyEl.innerHTML = '<p>Nothing here yet.</p><p>Add the first thing you\u2019re eyeing above.</p>';
+    } else if (filtered.length === 0) {
+      listEl.hidden = true;
+      emptyEl.hidden = false;
+      emptyEl.innerHTML = '<p>No matches.</p><p>Try a different search or category.</p>';
+    } else {
+      emptyEl.hidden = true;
+      listEl.hidden = false;
+      listEl.innerHTML = filtered.map(itemRowHtml).join('');
+    }
+
+    el('purchasedWrap').hidden = purchased.length === 0;
+    el('purchasedCount').textContent = purchased.length;
+    el('purchasedList').innerHTML = purchased.map(purchasedRowHtml).join('');
+
+    attachRowListeners();
+  }
+
+  function initListeners() {
+    document.querySelectorAll('.prio-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { setPriorityUI(btn.getAttribute('data-value')); });
+    });
+
+    el('fImage').addEventListener('input', updateImagePreview);
+    el('imgPreviewTag').onerror = function () { el('imgPreview').hidden = true; };
+
+    el('toggleNotes').addEventListener('click', function () {
+      var field = el('notesField');
+      field.hidden = !field.hidden;
+      el('toggleNotes').textContent = field.hidden ? '+ Add a note' : '\u2013 Hide note';
+      if (!field.hidden) el('fNotes').focus();
+    });
+
+    el('itemForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var name = el('fName').value.trim();
+      if (!name) return;
+      var priceVal = el('fPrice').value;
+      var existing = null;
+      if (editingId) {
+        for (var i = 0; i < state.items.length; i++) { if (state.items[i].id === editingId) { existing = state.items[i]; break; } }
+      }
+      var item = {
+        id: editingId || uid(),
+        name: name,
+        price: priceVal === '' ? null : Number(priceVal),
+        category: el('fCategory').value.trim() || 'Uncategorized',
+        priority: currentPriority,
+        link: el('fLink').value.trim() || null,
+        image: el('fImage').value.trim() || null,
+        notes: el('fNotes').value.trim() || null,
+        purchased: existing ? existing.purchased : false,
+        createdAt: existing ? existing.createdAt : Date.now()
+      };
+
+      if (editingId) {
+        var idx = -1;
+        for (var j = 0; j < state.items.length; j++) { if (state.items[j].id === editingId) { idx = j; break; } }
+        if (idx > -1) state.items[idx] = item;
+      } else {
+        state.items.push(item);
+      }
+
+      await saveData();
+      resetForm();
+      render();
+    });
+
+    el('cancelEdit').addEventListener('click', resetForm);
+
+    el('searchInput').addEventListener('input', render);
+    el('filterCategory').addEventListener('change', render);
+    el('sortSelect').addEventListener('change', render);
+
+    el('purchasedToggle').addEventListener('click', function () {
+      var list = el('purchasedList');
+      list.hidden = !list.hidden;
+    });
+
+    el('budgetDisplay').addEventListener('click', function () {
+      el('budgetDisplay').hidden = true;
+      el('budgetEdit').hidden = false;
+      el('budgetInput').value = state.budget === null ? '' : state.budget;
+      el('budgetInput').focus();
+    });
+
+    el('budgetSave').addEventListener('click', async function () {
+      var val = el('budgetInput').value;
+      state.budget = val === '' ? null : Number(val);
+      await saveData();
+      el('budgetDisplay').hidden = false;
+      el('budgetEdit').hidden = true;
+      render();
+    });
+
+    el('budgetInput').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); el('budgetSave').click(); }
+    });
+  }
+
+  async function init() {
+    initListeners();
+    await loadData();
+    render();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
