@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFC86B" />
+      <stop offset="50%" stop-color="#F5B041" />
+      <stop offset="100%" stop-color="#D48220" />
+    </linearGradient>
+    <linearGradient id="inkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A271F" />
+      <stop offset="100%" stop-color="#0E1511" />
+    </linearGradient>
+    <filter id="subtleShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Background Squircle -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#goldGrad)" />
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+
+  <!-- Wishlist Heart Silhouette -->
+  <path d="M47.8 17.2a9.6 9.6 0 0 0-13.6 0L32 19.4l-2.2-2.2a9.6 9.6 0 0 0-13.6 13.6L32 46.8l15.8-16a9.6 9.6 0 0 0 0-13.6z"
+        fill="url(#inkGrad)"
+        filter="url(#subtleShadow)" />
+
+  <!-- Small Sparkle in Top Right -->
+  <path d="M49 9 L50.2 12.8 L54 14 L50.2 15.2 L49 19 L47.8 15.2 L44 14 L47.8 12.8 Z" fill="#FFFFFF" opacity="0.95" />
+</svg>
