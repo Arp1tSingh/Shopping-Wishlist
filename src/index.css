@@ -509,6 +509,7 @@
     align-items: center;
     flex: 1;
     min-width: 240px;
+    flex-wrap: wrap;
   }
 
   .select-styled {
@@ -534,6 +535,7 @@
     padding: 2px;
     gap: 2px;
     flex-shrink: 0;
+    margin-left: auto;
   }
 
   .view-btn {

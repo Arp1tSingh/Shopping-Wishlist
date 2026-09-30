@@ -22,7 +22,7 @@ export default function Toolbar({
 
   return (
     <>
-      <div className="toolbar">
+      <div className="toolbar" style={{ flexWrap: 'wrap' }}>
         <div className="search-box">
           <Search className="search-icon" size={16} />
           <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search items or notes..." />
@@ -31,15 +31,15 @@ export default function Toolbar({
           )}
         </div>
 
-        <div className="filter-controls">
-          <select className="select-styled" value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
+        <div className="filter-controls" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          <select className="select-styled" value={filterCategory} onChange={e => setFilterCategory(e.target.value)} style={{ padding: '8px', minWidth: '130px', flex: '1 1 auto' }}>
             <option value="">All categories ({activeCount})</option>
             {categories.map(([cat, count]) => (
               <option key={cat} value={cat}>{cat} ({count})</option>
             ))}
           </select>
 
-          <select className="select-styled" value={sortMethod} onChange={e => setSortMethod(e.target.value)}>
+          <select className="select-styled" value={sortMethod} onChange={e => setSortMethod(e.target.value)} style={{ padding: '8px', minWidth: '130px', flex: '1 1 auto' }}>
             <option value="newest">Newest first</option>
             <option value="priceHigh">Price: High to Low</option>
             <option value="priceLow">Price: Low to High</option>
@@ -47,7 +47,7 @@ export default function Toolbar({
             <option value="name">Name A–Z</option>
           </select>
 
-          <div className="view-switcher">
+          <div className="view-switcher" style={{ flexShrink: 0 }}>
             <button className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')} title="Grid View">
               <Grid size={15} />
             </button>

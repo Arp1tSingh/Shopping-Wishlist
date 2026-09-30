@@ -2,14 +2,31 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, Share } from 'lucide-react';
 
-export default function Header({ refreshItems }) {
+export default function Header() {
   const { signOut, user } = useAuth();
   const [copied, setCopied] = useState(false);
   
   function handleShare() {
     if (user) {
-      const url = `${window.location.origin}/share/${user.id}`;
-      navigator.clipboard.writeText(url);
+      // Create a temporary input to copy the text to support more browsers
+      const url = `${window.location.host}/share/${user.id}`;
+      const fullUrl = window.location.protocol + '//' + url;
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(fullUrl);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = fullUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+        } catch (err) {
+          console.error('Failed to copy', err);
+        }
+        document.body.removeChild(textArea);
+      }
+      
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -31,9 +48,9 @@ export default function Header({ refreshItems }) {
       {user && (
         <div style={{ display: 'flex', gap: '12px' }}>
           <button onClick={handleShare} className="primary-btn" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <Share size={16} /> {copied ? 'Copied!' : 'Share Profile'}
+            <Share size={16} /> {copied ? 'Copied Link!' : 'Share Profile'}
           </button>
-          <button onClick={signOut} className="ghost-btn" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button onClick={signOut} className="ghost-btn" style={{ display: 'flex', gap: '8px', alignItems: 'center', backgroundColor: 'var(--panel)', color: 'var(--text)' }}>
             <LogOut size={16} /> Sign Out
           </button>
         </div>
