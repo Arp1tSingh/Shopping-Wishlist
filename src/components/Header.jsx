@@ -8,15 +8,13 @@ export default function Header() {
   
   function handleShare() {
     if (user) {
-      // Create a temporary input to copy the text to support more browsers
-      const url = `${window.location.host}/share/${user.id}`;
-      const fullUrl = window.location.protocol + '//' + url;
+      const url = `${window.location.origin}/share/${user.id}`;
       
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(fullUrl);
+        navigator.clipboard.writeText(url);
       } else {
         const textArea = document.createElement("textarea");
-        textArea.value = fullUrl;
+        textArea.value = url;
         document.body.appendChild(textArea);
         textArea.select();
         try {

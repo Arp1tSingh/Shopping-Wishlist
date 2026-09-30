@@ -4,6 +4,15 @@ import { Check, Edit2, Trash2, ExternalLink, Image as ImageIcon } from 'lucide-r
 
 const formatPrice = n => n ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n) : null;
 
+// Ensure relative links don't break routing
+const ensureProtocol = url => {
+  if (!url) return '';
+  if (!url.match(/^https?:\/\//i)) {
+    return 'https://' + url;
+  }
+  return url;
+};
+
 function Placeholder({ category }) {
   return (
     <div className="card-placeholder">
@@ -20,7 +29,7 @@ function Actions({ item, setEditingItem, refreshItems, readOnly }) {
     return (
       <div className="card-icon-btns">
         {item.link && (
-          <a href={item.link} target="_blank" rel="noopener noreferrer" className="icon-action-btn">
+          <a href={ensureProtocol(item.link)} target="_blank" rel="noopener noreferrer" className="icon-action-btn">
             <ExternalLink size={15} />
           </a>
         )}
@@ -51,7 +60,7 @@ function Actions({ item, setEditingItem, refreshItems, readOnly }) {
       </button>
       <div className="card-icon-btns">
         {item.link && (
-          <a href={item.link} target="_blank" rel="noopener noreferrer" className="icon-action-btn">
+          <a href={ensureProtocol(item.link)} target="_blank" rel="noopener noreferrer" className="icon-action-btn">
             <ExternalLink size={15} />
           </a>
         )}
@@ -176,7 +185,7 @@ export function ItemRow({ item, setEditingItem, refreshItems, readOnly }) {
         {priceStr && <span className="row-price">{priceStr}</span>}
         <div className="row-actions">
           {item.link && (
-            <a href={item.link} target="_blank" rel="noopener noreferrer" className="icon-action-btn">
+            <a href={ensureProtocol(item.link)} target="_blank" rel="noopener noreferrer" className="icon-action-btn">
               <ExternalLink size={15} />
             </a>
           )}
